@@ -5,7 +5,19 @@
 
 // Write a macro that passes the quiz! No hints this time, you can do it!
 
-// I AM NOT DONE
+
+
+macro_rules! my_macro {
+    ($string:expr) => {
+        format!("Hello {}", $string);
+    }
+}
+
+
+
+fn main() {
+    my_macro!("Test");
+}
 
 #[cfg(test)]
 mod tests {
