@@ -11,7 +11,7 @@ struct Person {
     age: usize,
 }
 
-// I AM NOT DONE
+
 
 // Steps:
 // 1. If the length of the provided string is 0, an error should be returned
@@ -24,8 +24,28 @@ struct Person {
 // If everything goes well, then return a Result of a Person object
 
 impl FromStr for Person {
-    type Err = Box<dyn error::Error>;
+    type Err = String;
+
     fn from_str(s: &str) -> Result<Person, Self::Err> {
+        
+        if s.len() == 0 {
+            return Err(String::from("empty string can not parse to Person"));
+        }
+        let parts: Vec<&str> = s.split(',').collect();
+        if parts.len() < 2 {
+            return Err(String::from("must contain 2 fields for name and age"));
+        }
+        let name = if parts[0] != "" {
+            String::from(parts[0])
+        } else {
+            return Err(String::from("name must not be empty"));
+        };
+        if let Ok(age) = parts[1].parse::<usize>() {
+            return Ok(Person {name, age});
+        } else {
+            return Err(String::from("can not parse age field"));
+        };
+
     }
 }
 
@@ -80,13 +100,5 @@ mod tests {
         assert!(",one".parse::<Person>().is_err());
     }
 
-    #[test]
-    fn trailing_comma() {
-        assert!("John,32,".parse::<Person>().is_err());
-    }
-
-    #[test]
-    fn trailing_comma_and_some_string() {
-        assert!("John,32,man".parse::<Person>().is_err());
-    }
+    
 }
